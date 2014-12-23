@@ -4,23 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Boring To-Do Application</title>
+    <title>{% block page_title %}Boring To-Do Application{% endblock %}</title>
 </head>
 
 <body>
     <header>
-        <h1>Boring To-Do Application</h1>
+        <h1>{% block header %}Boring To-Do Application{% endblock %}</h1>
     </header>
 
     <div id="main-container">
-        <h2>Tasks</h2>
-        <ul>
-        {% for task in tasks%}
-            <li>{{ task.description }}<i>, created {{ task.date_created }}</i></li>
-        {% empty %}
-            <li>All clear, enjoy!</li>
-        {% endfor %}
-        </ul>
+        {% block main_container %}
+        {% endblock %}
     </div>
     
 </body>

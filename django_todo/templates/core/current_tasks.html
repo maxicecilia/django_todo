@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+
+{% block page_title %}{{ block.super }} | Current Tasks{% endblock %}
+{% block header %}Current Tasks{% endblock %}
+
+{% block main_container %}
+    <h2>Tasks</h2>
+    <ul>
+    {% for task in tasks%}
+        <li><i>#{{ forloop.counter }}</i> - {{ task.description }}<i>, created {{ task.date_created }}</i></li>
+    {% empty %}
+        <li>All clear, enjoy!</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
