@@ -14,7 +14,13 @@
     <h3>Pending Tasks</h3>
     <ul>
     {% for task in tasks%}
-        <li>{{ task.description }}<i>, created {{ task.date_created|naturalday }}</i></li>
+        <li>
+            <form action="/complete/{{ task.pk }}/" method="post" id="completetask-{{ task.pk }}-form">
+                {% csrf_token %}
+                <input type="submit" value="done" />
+                {{ task.description }}<i>, created {{ task.date_created|naturalday }}</i>
+            </form>
+        </li>
     {% empty %}
         <li>All clear, enjoy!</li>
     {% endfor %}

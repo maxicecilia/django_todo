@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -19,5 +19,18 @@ def create_task(request):
         if form.is_valid():
             Task.objects.create(description=form.cleaned_data['description'])
             return HttpResponseRedirect('/')
+    else:
+        return HttpResponseForbidden('Forbidden')
+
+
+def complete_task(request, task_id):
+    if request.method == 'POST':
+        try:
+            task = Task.objects.get(pk=task_id)
+            task.is_checked = True
+            task.save()
+            return HttpResponseRedirect('/')
+        except:
+            raise HttpResponseNotFound("Cant find task id {0}".format(task_id))
     else:
         return HttpResponseForbidden('Forbidden')
