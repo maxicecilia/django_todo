@@ -1,13 +1,20 @@
 {% extends "core/base.html" %}
+{% load humanize %}
 
-{% block page_title %}{{ block.super }} | Current Tasks{% endblock %}
-{% block header %}Current Tasks{% endblock %}
+{% block page_title %}{{ block.super }} | Pending Tasks{% endblock %}
+{% block header %}Boring To-Do{% endblock %}
 
 {% block main_container %}
-    <h2>Tasks</h2>
+
+    <form action="/create/" method="post" id="newtask-form">{% csrf_token %}
+        <input id="description" type="text" name="description" value="{{ form.description.value|default:"" }}" placeholder="{{ form.description.label }}">
+        <input type="submit" value="Add">
+    </form>
+
+    <h3>Pending Tasks</h3>
     <ul>
     {% for task in tasks%}
-        <li><i>#{{ forloop.counter }}</i> - {{ task.description }}<i>, created {{ task.date_created }}</i></li>
+        <li>{{ task.description }}<i>, created {{ task.date_created|naturalday }}</i></li>
     {% empty %}
         <li>All clear, enjoy!</li>
     {% endfor %}
