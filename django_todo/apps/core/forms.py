@@ -1,5 +1,8 @@
-from django import forms
+from django.forms import ModelForm
+from django_todo.apps.core.models import Task
 
 
-class TaskForm(forms.Form):
-    description = forms.CharField(label='What needs to be done?', max_length=255)
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
+        fields = ['description']
