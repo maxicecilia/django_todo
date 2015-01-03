@@ -7,7 +7,10 @@
 {% block main_container %}
 
     <form action="/create/" method="post" id="newtask-form">{% csrf_token %}
-        <input id="description" type="text" name="description" value="{{ form.description.value|default:"" }}" placeholder="{{ form.description.label }}">
+        <p>{{ form.non_field_errors }}</p>
+        <p>{{ form.description.errors }}</p>
+        <input id="id_description" type="text" name="description" placeholder="{{ form.description.label }}">
+
         <input type="submit" value="Add">
     </form>
 
