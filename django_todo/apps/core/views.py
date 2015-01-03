@@ -8,7 +8,7 @@ from django_todo.apps.core.models import Task
 
 
 def current_tasks(request):
-    tasks = Task.objects.filter(is_checked=False).order_by('-date_created')
+    tasks = Task.objects.pending_tasks()
     return render_to_response('core/current_tasks.html',
                               RequestContext(request, {'tasks': tasks, }))
 
@@ -20,7 +20,7 @@ def create_task(request):
             form.save()
             return HttpResponseRedirect('/')
         else:
-            tasks = Task.objects.filter(is_checked=False).order_by('-date_created')
+            tasks = Task.objects.pending_tasks()
             return render_to_response('core/current_tasks.html',
                                       RequestContext(request, {'tasks': tasks, 'form': form, }))
     else:
