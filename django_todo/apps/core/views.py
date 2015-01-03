@@ -1,6 +1,7 @@
 from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic import View
 from django.views.generic.edit import FormView
 
 from django_todo.apps.core.forms import TaskForm
@@ -28,14 +29,12 @@ class CurrentTaskView(FormView):
                                   RequestContext(self.request, {'tasks': tasks, 'form': form, }))
 
 
-def complete_task(request, task_id):
-    if request.method == 'POST':
+class CompleteTaskView(View):
+    def post(self, request, *args, **kwargs):
         try:
-            task = Task.objects.get(pk=task_id)
+            task = Task.objects.get(pk=kwargs['id'])
             task.is_checked = True
             task.save()
             return HttpResponseRedirect('/')
-        except:
-            raise HttpResponseNotFound("Cant find task id {0}".format(task_id))
-    else:
-        return HttpResponseForbidden('Forbidden')
+        except Task.DoesNotExist:
+            raise HttpResponseNotFound("Cant find task id {0}".format(kwargs['id']))
