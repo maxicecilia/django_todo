@@ -1,30 +1,30 @@
-import json
 from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic import View
 
 from django_todo.apps.core.forms import TaskForm
 from django_todo.apps.core.models import Task
 
 
-def current_tasks(request):
-    tasks = Task.objects.pending_tasks()
-    return render_to_response('core/current_tasks.html',
-                              RequestContext(request, {'tasks': tasks, }))
+class CurrentTaskView(View):
+    template = 'core/current_tasks.html'
 
+    def get(self, request):
+        return self._return_tasks()
 
-def create_task(request):
-    if request.method == 'POST':
+    def post(self, request):
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/')
         else:
-            tasks = Task.objects.pending_tasks()
-            return render_to_response('core/current_tasks.html',
-                                      RequestContext(request, {'tasks': tasks, 'form': form, }))
-    else:
-        return HttpResponseForbidden('Forbidden')
+            return self._return_tasks(form)
+
+    def _return_tasks(self, form=None):
+        tasks = Task.objects.pending_tasks()
+        return render_to_response(self.template,
+                                  RequestContext(self.request, {'tasks': tasks, 'form': form, }))
 
 
 def complete_task(request, task_id):
