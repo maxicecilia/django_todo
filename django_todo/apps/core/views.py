@@ -1,29 +1,30 @@
 from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.views.generic import View
+from django.views.generic.edit import FormView
 
 from django_todo.apps.core.forms import TaskForm
 from django_todo.apps.core.models import Task
 
 
-class CurrentTaskView(View):
-    template = 'core/current_tasks.html'
+class CurrentTaskView(FormView):
+    form_class = TaskForm
+    success_url = '/'
+    template_name = 'core/current_tasks.html'
 
     def get(self, request):
         return self._return_tasks()
 
-    def post(self, request):
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
-        else:
-            return self._return_tasks(form)
+    def form_valid(self, form):
+        form.save()
+        return super(CurrentTaskView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        return self._return_tasks(form)
 
     def _return_tasks(self, form=None):
         tasks = Task.objects.pending_tasks()
-        return render_to_response(self.template,
+        return render_to_response(self.template_name,
                                   RequestContext(self.request, {'tasks': tasks, 'form': form, }))
 
 
