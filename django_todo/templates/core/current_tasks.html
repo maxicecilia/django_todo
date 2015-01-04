@@ -31,7 +31,7 @@
                 <div class="col-lg-9">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox">{{ task.description }}
+                            <input type="checkbox" data-post-url="{% url 'complete_task' task.pk %}">{{ task.description }}
                             <em>, created {{ task.date_created|naturalday }}</em>
                         </label>
                     </div>
@@ -51,7 +51,17 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $('body').on('click', 'input[type=checkbox]', function() {
-            console.log('asdasd');
+            $.ajax({
+              type: "POST",
+              url: $(this).data("post-url"),
+              success: function(response) {
+                // reload if success
+                window.location = "/";
+              },
+              error: function(response) {
+                alert("Something went wrong. Please, call 911.");
+              }
+            });
         });
     });
     </script>
