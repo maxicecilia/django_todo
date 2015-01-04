@@ -2,30 +2,57 @@
 {% load humanize %}
 
 {% block page_title %}{{ block.super }} | Pending Tasks{% endblock %}
-{% block header %}Boring To-Do{% endblock %}
+{% block header %}Amazing To-Do{% endblock %}
 
 {% block main_container %}
 
-    <form action="/create/" method="post" id="newtask-form">{% csrf_token %}
-        <p>{{ form.non_field_errors }}</p>
-        <p>{{ form.description.errors }}</p>
-        <input id="id_description" type="text" name="description" placeholder="{{ form.description.label }}">
-
-        <input type="submit" value="Add">
-    </form>
-
-    <h3>Pending Tasks</h3>
-    <ul>
-    {% for task in tasks%}
-        <li>
-            <form action="/complete/{{ task.pk }}/" method="post" id="completetask-{{ task.pk }}-form">
-                {% csrf_token %}
-                <input type="submit" value="done" />
-                {{ task.description }}<i>, created {{ task.date_created|naturalday }}</i>
+    <div class="row">
+        <div class="col-lg-9">
+            <form class="form-horizontal" action="{% url 'create_task' %}" method="post" id="newtask-form">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {% if form.non_field_errors or form.description.errors %}
+                    <div class="alert alert-dismissable alert-danger">
+                        {{ form.non_field_errors.as_text }}
+                        {{ form.description.errors.as_text }}
+                    </div>
+                    {% endif %}
+                    <input class="form-control" id="id_description" type="text" name="description" placeholder="{{ form.description.label }}">
+                    <input class="btn btn-primary" type="submit" value="Add">
+                </div>
             </form>
-        </li>
-    {% empty %}
-        <li>All clear, enjoy!</li>
-    {% endfor %}
-    </ul>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <h3>Pending Tasks</h3>
+        {% for task in tasks%}
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">{{ task.description }}
+                            <em>, created {{ task.date_created|naturalday }}</em>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="row">
+                <div class="col-lg-9">
+                    <p>All clear, enjoy!</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block js_bottom_extra %}
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('body').on('click', 'input[type=checkbox]', function() {
+            console.log('asdasd');
+        });
+    });
+    </script>
 {% endblock %}

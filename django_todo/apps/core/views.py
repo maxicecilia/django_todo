@@ -14,7 +14,7 @@ class CurrentTaskView(FormView):
     template_name = 'core/current_tasks.html'
 
     def get(self, request):
-        return self._return_tasks()
+        return self._return_tasks(TaskForm())
 
     def form_valid(self, form):
         form.save()
