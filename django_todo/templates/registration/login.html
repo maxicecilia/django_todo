@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block page_title %}{{ block.super }} | Login{% endblock %}
+{% block header %}Welcome{% endblock %}
+
+{% block main_container %}
+    
+    <form class="form-horizontal" action="{% url 'django.contrib.auth.views.login' %}" method="post" id="login-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <input class="btn btn-primary" type="submit" value="login">
+    </form>
+{% endblock %}

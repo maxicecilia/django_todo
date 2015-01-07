@@ -10,5 +10,8 @@ urlpatterns = patterns(
     url(r'create/$', CurrentTaskView.as_view(), name='create_task'),
     url(r'complete/(?P<id>\d+)/$', csrf_exempt(CompleteTaskView.as_view()), name='complete_task'),
 
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout'),
+
     url(r'^admin/', include(admin.site.urls)),
 )
