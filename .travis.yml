@@ -1,0 +1,13 @@
+language: python
+python:
+  - "2.7"
+env:
+  - DJANGO_VERSION=1.4.18 DJANGO_SETTINGS_MODULE="django_todo.settings"
+  - DJANGO_VERSION=1.6.10 DJANGO_SETTINGS_MODULE="django_todo.settings"
+  - DJANGO_VERSION=1.7.1 DJANGO_SETTINGS_MODULE="django_todo.settings"
+# command to install dependencies
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -r requirements.txt
+# command to run tests
+script: python manage.py test
