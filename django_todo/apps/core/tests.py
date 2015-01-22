@@ -67,3 +67,25 @@ class CurrentTaskViewTests(TestCase):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['tasks']), 2)
+
+    def test_add_new_task(self):
+        """If user is logged, and form is valid, then save a new task."""
+        description = 'Readability counts.'
+        self.client.login(username=self.user.username, password=self.password)
+        create_tasks(self.user)
+        # check that the task does not exists
+        self.assertFalse(Task.objects.filter(description=description).exists())
+        response = self.client.post(reverse('create_task'), data={'description': description})
+        self.assertEqual(response.status_code, 302)  # We got 302 because there is a redirect.
+        # check that the task does exists
+        self.assertTrue(Task.objects.filter(description=description).exists())
+
+    def test_complete_task(self):
+        """If user is logged, and form is valid, then mark task as completed."""
+        self.client.login(username=self.user.username, password=self.password)
+        create_tasks(self.user)
+        task_id = Task.objects.all()[0].id
+        self.assertTrue(Task.objects.filter(pk=task_id).exists())
+        response = self.client.post(reverse('complete_task', kwargs={'id': task_id}))
+        self.assertEqual(response.status_code, 302)  # We got 302 because there is a redirect.
+        self.assertTrue(Task.objects.get(pk=task_id).is_checked)
